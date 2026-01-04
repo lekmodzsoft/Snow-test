@@ -1,0 +1,865 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Snow Owl Agency</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;600;700&family=Playfair+Display:wght@400;700&display=swap" rel="stylesheet">
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+<style>
+    /* Estilos Gerais - Tema Ártico/Coruja da Neve */
+    body {
+        font-family: 'Montserrat', sans-serif;
+        margin: 0;
+        color: #1a2a3a;
+        text-align: center;
+        background-color: #f0f8ff;
+        background-image: 
+            radial-gradient(circle at 10% 20%, rgba(255, 255, 255, 0.9) 0%, transparent 20%),
+            radial-gradient(circle at 90% 80%, rgba(200, 230, 255, 0.7) 0%, transparent 20%);
+        overflow-x: hidden;
+        position: relative;
+    }
+
+    /* Efeito de neve caindo */
+    .snowfall {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        pointer-events: none;
+        z-index: -1;
+        opacity: 0.6;
+    }
+
+    .snowflake {
+        position: absolute;
+        background-color: white;
+        border-radius: 50%;
+        opacity: 0.8;
+        animation: fall linear infinite;
+    }
+
+    @keyframes fall {
+        to {
+            transform: translateY(100vh);
+        }
+    }
+
+    /* Efeito de brilho glacial */
+    body::before {
+        content: '';
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: radial-gradient(circle at 20% 30%, rgba(173, 216, 230, 0.2), transparent 30%),
+                    radial-gradient(circle at 80% 70%, rgba(135, 206, 250, 0.15), transparent 30%);
+        z-index: -1;
+    }
+
+    /* Efeitos de vidro (Glassmorphism) estilo gelo */
+    .glass {
+        background: rgba(255, 255, 255, 0.85);
+        backdrop-filter: blur(10px);
+        -webkit-backdrop-filter: blur(10px);
+        border: 1px solid rgba(255, 255, 255, 0.3);
+        box-shadow: 0 8px 32px 0 rgba(135, 206, 250, 0.2);
+    }
+    
+    .frost-border {
+        border: 1px solid rgba(173, 216, 230, 0.5);
+        box-shadow: 0 0 10px rgba(135, 206, 250, 0.3), inset 0 0 10px rgba(255, 255, 255, 0.5);
+    }
+
+    /* Loader */
+    #loader {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: #0a1e2e;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        z-index: 2000;
+        flex-direction: column;
+        color: white;
+        font-family: 'Playfair Display', serif;
+        transition: opacity 0.5s ease;
+        background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 100 100"><path fill="%230a1e2e" d="M50,10 L60,40 L90,40 L65,60 L75,90 L50,70 L25,90 L35,60 L10,40 L40,40 Z"/></svg>');
+        background-repeat: no-repeat;
+        background-position: center;
+        background-size: 100px;
+    }
+
+    .loader-title {
+        font-size: 2.5em;
+        font-weight: 700;
+        letter-spacing: 2px;
+        margin-bottom: 20px;
+        color: #e6f7ff;
+        text-shadow: 0 0 10px rgba(135, 206, 250, 0.7);
+    }
+
+    .loader-container {
+        width: 200px;
+        height: 4px;
+        background: rgba(255, 255, 255, 0.2);
+        border-radius: 2px;
+        position: relative;
+        overflow: hidden;
+    }
+    
+    .loader-bar {
+        position: absolute;
+        top: 0;
+        left: 0;
+        height: 100%;
+        width: 0;
+        background: linear-gradient(90deg, #87ceeb, #b0e0e6, #e0ffff);
+        border-radius: 2px;
+        animation: load-bar 4s cubic-bezier(0.8, 0.0, 0.2, 1.0) infinite;
+    }
+    
+    .loader-glow {
+        position: absolute;
+        top: 0;
+        left: 0;
+        height: 100%;
+        width: 100%;
+        background: rgba(255, 255, 255, 0.5);
+        filter: blur(5px);
+        animation: glow-pulse 4s cubic-bezier(0.8, 0.0, 0.2, 1.0) infinite;
+    }
+
+    @keyframes load-bar {
+        0% { width: 0; }
+        50% { width: 100%; }
+        100% { width: 0; }
+    }
+    
+    @keyframes glow-pulse {
+        0% { transform: scaleX(0); opacity: 0; }
+        50% { transform: scaleX(1); opacity: 1; }
+        100% { transform: scaleX(0); opacity: 0; }
+    }
+
+    .loader-subtitle {
+        font-size: 1.2em;
+        font-weight: 600;
+        margin-top: 20px;
+        color: #b0e0e6;
+        animation: pulse 1.5s infinite alternate;
+    }
+
+    @keyframes pulse {
+        from { opacity: 0.6; }
+        to { opacity: 1; }
+    }
+
+    /* Cabeçalho */
+    header {
+        padding: 40px 20px;
+        position: relative;
+        animation: fade-in 1s ease-out forwards;
+        opacity: 0;
+    }
+    
+    @keyframes fade-in {
+        from { opacity: 0; transform: translateY(20px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+    
+    .logo-container {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        margin-bottom: 20px;
+        flex-direction: column;
+    }
+    
+    .owl-icon {
+        font-size: 3em;
+        color: #2c5a78;
+        margin-bottom: 10px;
+        text-shadow: 0 0 15px rgba(135, 206, 250, 0.5);
+        animation: float-owl 4s ease-in-out infinite;
+    }
+    
+    @keyframes float-owl {
+        0%, 100% { transform: translateY(0) rotate(0deg); }
+        50% { transform: translateY(-10px) rotate(5deg); }
+    }
+    
+    header h1 { 
+        font-family: 'Playfair Display', serif; 
+        font-size: 2.8em; 
+        font-weight: 700; 
+        margin-bottom: 5px; 
+        color: #1a3a5f;
+        text-shadow: 1px 1px 3px rgba(0,0,0,0.1);
+    }
+    
+    header p.subtitle { 
+        font-size: 1.2em; 
+        margin-bottom: 10px; 
+        color: #2c5a78; 
+        font-weight: 600;
+    }
+    
+    header p.agency-info { 
+        font-size: 1em; 
+        margin-bottom: 20px; 
+        color: #4a6fa5; 
+        max-width: 600px; 
+        margin-left: auto; 
+        margin-right: auto;
+        line-height: 1.6;
+    }
+
+    /* Menu hamburguer */
+    .hamburger { 
+        position: absolute; 
+        top: 25px; 
+        right: 25px; 
+        font-size: 1.8em; 
+        cursor: pointer; 
+        color: #2c5a78; 
+        z-index: 1001;
+    }
+    
+    .menu { 
+        display: none; 
+        flex-direction: column; 
+        position: absolute; 
+        right: 20px; 
+        top: 60px; 
+        padding: 20px; 
+        border-radius: 15px; 
+        text-align: left; 
+        z-index: 1000;
+        min-width: 200px;
+    }
+    
+    .menu a { 
+        color: #1a3a5f; 
+        text-decoration: none; 
+        margin-bottom: 12px; 
+        display: block; 
+        font-family: 'Montserrat', sans-serif;
+        font-weight: 600;
+        padding: 8px 0;
+        border-bottom: 1px solid rgba(173, 216, 230, 0.3);
+        transition: all 0.3s;
+    }
+    
+    .menu a:last-child {
+        border-bottom: none;
+    }
+    
+    .menu a:hover { 
+        color: #4a6fa5; 
+        transform: translateX(5px);
+    }
+
+    /* Botões */
+    .btn-container { 
+        margin-top: 20px; 
+        display: flex; 
+        flex-direction: column; 
+        gap: 15px; 
+        align-items: center; 
+    }
+    
+    .btn, .btn-whatsapp {
+        padding: 16px 25px; 
+        font-size: 1.2em; 
+        font-weight: bold; 
+        border-radius: 12px; 
+        text-decoration: none; 
+        display: inline-flex; 
+        align-items: center; 
+        gap: 10px; 
+        transition: all 0.3s; 
+        justify-content: center;
+        font-family: 'Montserrat', sans-serif;
+        letter-spacing: 0.5px;
+        position: relative;
+        overflow: hidden;
+        border: none;
+    }
+    
+    .btn { 
+        background: linear-gradient(135deg, #2c5a78, #4a6fa5); 
+        color: white; 
+        box-shadow: 0 4px 15px rgba(42, 90, 128, 0.3);
+    }
+    
+    .btn:hover { 
+        background: linear-gradient(135deg, #3a6a8a, #5a7fb5); 
+        transform: translateY(-3px); 
+        box-shadow: 0 6px 20px rgba(42, 90, 128, 0.4);
+    }
+    
+    .btn-whatsapp { 
+        background: linear-gradient(135deg, #25D366, #128C7E); 
+        color: white; 
+        box-shadow: 0 4px 15px rgba(37, 211, 102, 0.3);
+    }
+    
+    .btn-whatsapp:hover { 
+        background: linear-gradient(135deg, #1ebe57, #0d7d6f); 
+        transform: translateY(-3px); 
+        box-shadow: 0 6px 20px rgba(37, 211, 102, 0.4);
+    }
+    
+    .btn i, .btn-whatsapp i { 
+        font-size: 1.2em; 
+    }
+
+    /* Features/Serviços */
+    section { 
+        padding: 40px 20px; 
+        max-width: 900px; 
+        margin: auto; 
+    }
+    
+    .feature {
+        padding: 25px; 
+        margin-bottom: 25px; 
+        text-align: left; 
+        cursor: pointer;
+        border-radius: 15px;
+        transition: all 0.3s;
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+        animation: fade-in 1s ease-out forwards;
+        opacity: 0;
+        border-left: 5px solid #87ceeb;
+    }
+    
+    .feature:nth-of-type(1) { animation-delay: 0.2s; }
+    .feature:nth-of-type(2) { animation-delay: 0.4s; }
+    .feature:nth-of-type(3) { animation-delay: 0.6s; }
+    
+    .feature:hover {
+        transform: translateY(-8px);
+        box-shadow: 0 15px 30px rgba(135, 206, 250, 0.2);
+        border-left: 5px solid #4a6fa5;
+    }
+    
+    .feature h3 { 
+        font-size: 1.5em; 
+        margin-bottom: 10px; 
+        display: flex; 
+        align-items: center; 
+        gap: 10px; 
+        font-family: 'Montserrat', sans-serif; 
+        color: #1a3a5f;
+    }
+    
+    .feature p { 
+        font-size: 1.05em; 
+        color: #4a6fa5; 
+        line-height: 1.6;
+    }
+    
+    .feature i { 
+        color: #2c5a78; 
+        font-size: 1.3em;
+        transition: all 0.3s;
+    }
+    
+    .feature:hover i {
+        transform: scale(1.2);
+        color: #4a6fa5;
+    }
+
+    /* Patrocinadores */
+    .sponsors {
+        margin: 40px auto;
+        max-width: 900px;
+        display: flex;
+        justify-content: center;
+        gap: 30px;
+        flex-wrap: wrap;
+        animation: fade-in 1.5s ease-out forwards;
+        opacity: 0;
+        animation-delay: 0.8s;
+    }
+    
+    .sponsor-card {
+        padding: 20px;
+        border-radius: 15px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        transition: all 0.3s;
+        width: 180px;
+        border: 1px solid rgba(173, 216, 230, 0.5);
+        background: rgba(255, 255, 255, 0.9);
+    }
+    
+    .sponsor-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 25px rgba(135, 206, 250, 0.3);
+    }
+    
+    .sponsor-card img, .sponsor-card i { 
+        max-width: 80px; 
+        margin-bottom: 15px; 
+        transition: all 0.3s; 
+    }
+    
+    .sponsor-card:hover img, .sponsor-card:hover i { 
+        transform: scale(1.1); 
+    }
+    
+    .sponsor-card i { 
+        color: #2c5a78; 
+        font-size: 50px; 
+    }
+    
+    .sponsor-card a { 
+        text-decoration: none; 
+        color: #1a3a5f; 
+        font-weight: bold; 
+        font-family: 'Montserrat', sans-serif; 
+        font-size: 0.9em;
+    }
+    
+    .sponsor-card a:hover {
+        color: #4a6fa5;
+    }
+
+    /* Botão flutuante do WhatsApp */
+    #whatsapp-float {
+        position: fixed; 
+        width: 60px; 
+        height: 60px; 
+        bottom: 25px; 
+        right: 25px;
+        background: linear-gradient(135deg, #25D366, #128C7E); 
+        color: white; 
+        border-radius: 50%; 
+        text-align: center; 
+        font-size: 30px;
+        z-index: 1000; 
+        box-shadow: 0 4px 15px rgba(37, 211, 102, 0.4); 
+        display: flex; 
+        align-items: center; 
+        justify-content: center; 
+        transition: all 0.3s;
+    }
+    
+    #whatsapp-float:hover { 
+        transform: scale(1.1) rotate(5deg); 
+        box-shadow: 0 6px 20px rgba(37, 211, 102, 0.6); 
+    }
+
+    /* Like & Views Container */
+    .like-views {
+        margin: 20px auto;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        gap: 30px;
+        animation: fade-in 1s ease-out forwards;
+        opacity: 0;
+        animation-delay: 0.1s;
+    }
+    
+    .like-views button, .like-views div {
+        color: #1a3a5f; 
+        padding: 12px 20px; 
+        border-radius: 15px;
+        display: flex; 
+        align-items: center; 
+        gap: 10px; 
+        font-size: 1.1em;
+        font-family: 'Montserrat', sans-serif;
+        font-weight: 600;
+        border: 1px solid rgba(173, 216, 230, 0.5);
+        background: rgba(255, 255, 255, 0.9);
+        box-shadow: 0 4px 10px rgba(135, 206, 250, 0.2);
+    }
+    
+    .like-views button { 
+        border: none; 
+        cursor: pointer; 
+        transition: all 0.3s; 
+    }
+    
+    .like-views button:hover { 
+        background: #f0f8ff; 
+        transform: translateY(-3px); 
+        box-shadow: 0 6px 15px rgba(135, 206, 250, 0.3);
+    }
+    
+    .like-views div:hover { 
+        transform: translateY(-3px); 
+        box-shadow: 0 6px 15px rgba(135, 206, 250, 0.3);
+    }
+    
+    .like-views i { 
+        color: #2c5a78; 
+    }
+    
+    .like-views button i {
+        color: #e63946;
+    }
+
+    /* Modal */
+    #infoModal {
+        display: none;
+        position: fixed;
+        z-index: 5000;
+        left: 0; 
+        top: 0;
+        width: 100%; 
+        height: 100%;
+        background-color: rgba(10, 30, 46, 0.85);
+        justify-content: center;
+        align-items: center;
+        animation: modal-fade-in 0.5s ease-out forwards;
+    }
+    
+    @keyframes modal-fade-in {
+        from { opacity: 0; }
+        to { opacity: 1; }
+    }
+    
+    .modal-content {
+        padding: 30px; 
+        border-radius: 20px; 
+        max-width: 500px;
+        color: #1a3a5f; 
+        text-align: left; 
+        position: relative;
+        border: 1px solid rgba(173, 216, 230, 0.5);
+        box-shadow: 0 15px 35px rgba(10, 30, 46, 0.3);
+        background: rgba(255, 255, 255, 0.95);
+        backdrop-filter: blur(10px);
+        -webkit-backdrop-filter: blur(10px);
+        animation: modal-slide-in 0.5s cubic-bezier(0.68, -0.55, 0.27, 1.55) forwards;
+    }
+    
+    @keyframes modal-slide-in {
+        from { transform: translateY(-50px); opacity: 0; }
+        to { transform: translateY(0); opacity: 1; }
+    }
+    
+    .modal-content h3 { 
+        margin-top: 0; 
+        font-size: 1.8em; 
+        font-family: 'Playfair Display', serif; 
+        color: #1a3a5f;
+        margin-bottom: 15px;
+    }
+    
+    .modal-content p { 
+        font-size: 1.05em; 
+        color: #4a6fa5; 
+        line-height: 1.6;
+    }
+    
+    .close-modal {
+        position: absolute; 
+        top: 15px; 
+        right: 20px;
+        font-size: 2em; 
+        cursor: pointer; 
+        color: #2c5a78; 
+        transition: transform 0.3s;
+    }
+    
+    .close-modal:hover { 
+        transform: rotate(90deg); 
+        color: #4a6fa5;
+    }
+
+    /* Footer */
+    footer {
+        padding: 30px 20px;
+        margin-top: 40px;
+        border-top: 1px solid rgba(173, 216, 230, 0.5);
+        background: rgba(255, 255, 255, 0.8);
+    }
+    
+    footer p {
+        font-size: 0.9em; 
+        color: #4a6fa5; 
+        margin: 0;
+    }
+
+    /* Responsivo */
+    @media (min-width: 768px) {
+        .btn-container { 
+            flex-direction: row; 
+            justify-content: center; 
+            gap: 20px;
+        }
+        
+        .btn, .btn-whatsapp { 
+            width: auto; 
+            min-width: 220px;
+        }
+        
+        .feature {
+            flex-direction: row;
+            align-items: flex-start;
+        }
+        
+        .feature i {
+            margin-right: 15px;
+            margin-top: 5px;
+        }
+    }
+    
+    @media (max-width: 767px) {
+        header h1 { font-size: 2.2em; }
+        .feature { padding: 20px; }
+        .sponsors { gap: 20px; }
+        .sponsor-card { width: 140px; padding: 15px; }
+    }
+</style>
+</head>
+<body>
+
+<div class="snowfall" id="snowfall"></div>
+
+<div id="loader">
+    <div class="loader-title">SNOW OWL AGENCY</div>
+    <div class="loader-container">
+        <div class="loader-bar"></div>
+        <div class="loader-glow"></div>
+    </div>
+    <div class="loader-subtitle">PREPARANDO SUA JORNADA...</div>
+</div>
+
+<header>
+    <div class="logo-container">
+        <div class="owl-icon">
+            <i class="fas fa-feather-alt"></i>
+        </div>
+        <h1>Snow Owl Agency</h1>
+        <p class="subtitle">Voando alto com talentos extraordinários!</p>
+        <p class="agency-info">Somos uma agência especializada em desenvolver e impulsionar carreiras de hosts na Bigo Live, com foco em estratégias personalizadas, contratos seguros e crescimento sustentável.</p>
+    </div>
+
+    <div class="like-views">
+        <button id="likeBtn" class="glass"><i class="fas fa-heart"></i> <span id="likeCount">0</span> Curtidas</button>
+        <div class="glass"><i class="fas fa-eye"></i> <span id="viewCount">0</span> Visualizações</div>
+    </div>
+
+    <i class="fas fa-bars hamburger" onclick="toggleMenu()"></i>
+    <div class="menu glass" id="menu">
+        <a href="javascript:void(0)" onclick="openModal('crescimento')"><i class="fas fa-chart-line"></i> Crescimento Estratégico</a>
+        <a href="javascript:void(0)" onclick="openModal('contratos')"><i class="fas fa-file-signature"></i> Contratos Protegidos</a>
+        <a href="javascript:void(0)" onclick="openModal('pagamentos')"><i class="fas fa-shield-alt"></i> Segurança e Pagamentos</a>
+        <a href="javascript:void(0)" onclick="openModal('mentoria')"><i class="fas fa-graduation-cap"></i> Mentoria Especializada</a>
+    </div>
+
+    <div style="margin: 30px auto; max-width: 500px; border-radius: 10px; overflow: hidden; box-shadow: 0 10px 25px rgba(0,0,0,0.1);">
+        <iframe width="100%" height="280" src="https://www.youtube.com/embed/c7j4zKMaIYw?si=bvSBsQoQ5Hlhf858" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+    </div>
+
+    <div class="btn-container">
+        <a href="https://wa.me/553496741592?text=Ol%C3%A1%2C%20gostaria%20de%20saber%20mais%20sobre%20a%20Snow%20Owl%20Agency" class="btn"><i class="fa-solid fa-feather"></i> Quero Ser Host</a>
+        <a href="https://wa.me/553496741592?text=Ol%C3%A1%2C%20gostaria%20de%20saber%20mais%20sobre%20a%20Snow%20Owl%20Agency" class="btn-whatsapp"><i class="fa-brands fa-whatsapp"></i> Falar no WhatsApp</a>
+    </div>
+</header>
+
+<section>
+    <div class="feature glass" id="crescimento" onclick="openModal('crescimento')">
+        <i class="fa-solid fa-chart-line"></i>
+        <div>
+            <h3>Crescimento Estratégico</h3>
+            <p>Desenvolvemos planos personalizados para expandir sua audiência e aumentar seus ganhos na Bigo Live de forma consistente e sustentável.</p>
+        </div>
+    </div>
+    <div class="feature glass" id="contratos" onclick="openModal('contratos')">
+        <i class="fa-solid fa-file-signature"></i>
+        <div>
+            <h3>Contratos Protegidos</h3>
+            <p>Oferecemos contratos claros e seguros, com respaldo legal e suporte contínuo para sua tranquilidade e proteção.</p>
+        </div>
+    </div>
+    <div class="feature glass" id="pagamentos" onclick="openModal('pagamentos')">
+        <i class="fa-solid fa-shield-alt"></i>
+        <div>
+            <h3>Segurança e Pagamentos</h3>
+            <p>Garantimos pagamentos pontuais e transparentes, com toda a segurança necessária para você focar no seu conteúdo.</p>
+        </div>
+    </div>
+    <div class="feature glass" id="mentoria" onclick="openModal('mentoria')">
+        <i class="fa-solid fa-graduation-cap"></i>
+        <div>
+            <h3>Mentoria Especializada</h3>
+            <p>Acompanhamento individual com especialistas para desenvolver suas habilidades e maximizar seu potencial como host.</p>
+        </div>
+    </div>
+</section>
+
+<section>
+    <h2 style="margin-bottom: 30px; font-family: 'Playfair Display', serif; color: #1a3a5f;">Parceiros e Apoiadores</h2>
+    <div class="sponsors">
+        <div class="sponsor-card glass">
+            <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQV1YDc2Px968li3sXR1KKv0l6gln9EtBywZXo8L03X_xRG9w03LEdbNU7y&s=10" alt="Bigo Live">
+            <a href="https://www.bigo.tv" target="_blank">Bigo Live</a>
+        </div>
+
+        <div class="sponsor-card glass">
+            <i class="fas fa-snowflake" style="font-size:50px; margin-bottom:10px;"></i>
+            <a href="https://www.snowowlagency.com" target="_blank">Snow Owl Agency</a>
+        </div>
+
+        <div class="sponsor-card glass">
+            <i class="fas fa-globe" style="font-size:50px; margin-bottom:10px;"></i>
+            <a href="https://www.digitalpartners.com" target="_blank">Digital Partners</a>
+        </div>
+    </div>
+</section>
+
+<div id="infoModal">
+    <div class="modal-content glass">
+        <span class="close-modal" onclick="closeModal()">&times;</span>
+        <h3 id="modalTitle"></h3>
+        <p id="modalText"></p>
+    </div>
+</div>
+
+<footer>
+    <p>&copy; 2025 Snow Owl Agency - Todos os direitos reservados. | Voando alto com talentos extraordinários</p>
+</footer>
+
+<a href="https://wa.me/553496741592?text=Ol%C3%A1%2C%20gostaria%20de%20saber%20mais%20sobre%20a%20Snow%20Owl%20Agency" target="_blank" id="whatsapp-float">
+    <i class="fab fa-whatsapp"></i>
+</a>
+
+<script>
+// Criar efeito de neve
+function createSnowfall() {
+    const snowfall = document.getElementById('snowfall');
+    const snowflakeCount = 50;
+    
+    for (let i = 0; i < snowflakeCount; i++) {
+        const snowflake = document.createElement('div');
+        snowflake.classList.add('snowflake');
+        
+        // Tamanho aleatório
+        const size = Math.random() * 5 + 3;
+        snowflake.style.width = `${size}px`;
+        snowflake.style.height = `${size}px`;
+        
+        // Posição inicial aleatória
+        snowflake.style.left = `${Math.random() * 100}vw`;
+        
+        // Duração e atraso aleatórios da animação
+        const duration = Math.random() * 10 + 10;
+        const delay = Math.random() * 5;
+        snowflake.style.animationDuration = `${duration}s`;
+        snowflake.style.animationDelay = `${delay}s`;
+        
+        // Opacidade aleatória
+        snowflake.style.opacity = Math.random() * 0.7 + 0.3;
+        
+        snowfall.appendChild(snowflake);
+    }
+}
+
+// Menu hamburguer
+function toggleMenu() {
+    const menu = document.getElementById('menu');
+    menu.style.display = (menu.style.display === "flex") ? "none" : "flex";
+}
+
+// Loader visível por 5 segundos
+window.addEventListener("load", function(){
+    createSnowfall();
+    
+    const loader = document.getElementById("loader");
+    setTimeout(() => {
+        loader.style.opacity = "0";
+        setTimeout(() => { loader.style.display = "none"; }, 500);
+    }, 5000);
+});
+
+// Like button logic
+let likeCount = localStorage.getItem('likeCount') || 0;
+document.getElementById('likeCount').innerText = likeCount;
+document.getElementById('likeBtn').addEventListener('click', () => {
+    likeCount++;
+    localStorage.setItem('likeCount', likeCount);
+    document.getElementById('likeCount').innerText = likeCount >= 1000 ? (likeCount/1000).toFixed(1)+'k' : likeCount;
+    
+    // Efeito visual ao curtir
+    const btn = document.getElementById('likeBtn');
+    btn.style.transform = 'scale(1.1)';
+    setTimeout(() => { btn.style.transform = 'scale(1)'; }, 300);
+});
+
+// View counter logic
+let viewCount = localStorage.getItem('viewCount') || 0;
+viewCount++;
+localStorage.setItem('viewCount', viewCount);
+document.getElementById('viewCount').innerText = viewCount >= 1000 ? (viewCount/1000).toFixed(1)+'k' : viewCount;
+
+// Modal functionality
+function openModal(feature) {
+    const modal = document.getElementById('infoModal');
+    const title = document.getElementById('modalTitle');
+    const text = document.getElementById('modalText');
+
+    if(feature === 'crescimento') {
+        title.innerText = 'Crescimento Estratégico';
+        text.innerText = 'Na Snow Owl Agency, desenvolvemos estratégias personalizadas para cada host. Analisamos seu perfil, identificamos oportunidades e criamos um plano de crescimento específico. Nossas técnicas incluem otimização de horários, engajamento de audiência, colaborações estratégicas e muito mais para garantir que seu crescimento seja consistente e sustentável.';
+    } else if(feature === 'contratos') {
+        title.innerText = 'Contratos Protegidos';
+        text.innerText = 'Nossos contratos são desenvolvidos com transparência e segurança jurídica. Cada cláusula é explicada detalhadamente, garantindo que você compreenda todos os seus direitos e obrigações. Trabalhamos com intermedição oficial com a Bigo Live, oferecendo respaldo legal completo e suporte contínuo para qualquer questão que possa surgir durante sua carreira.';
+    } else if(feature === 'pagamentos') {
+        title.innerText = 'Segurança e Pagamentos';
+        text.innerText = 'Garantimos que todos os pagamentos sejam processados de forma segura, transparente e pontual. Utilizamos sistemas de pagamento confiáveis e fornecemos extratos detalhados de todos os seus ganhos. Nossa equipe financeira está sempre disponível para esclarecer dúvidas e garantir que você receba o valor correto na data combinada.';
+    } else if(feature === 'mentoria') {
+        title.innerText = 'Mentoria Especializada';
+        text.innerText = 'Oferecemos mentoria individual com especialistas em performance digital. Nossos mentores trabalham com você para desenvolver suas habilidades de comunicação, criar conteúdo envolvente, construir uma marca pessoal forte e maximizar seu potencial na plataforma. É como ter um treinador pessoal para sua carreira digital!';
+    }
+
+    modal.style.display = 'flex';
+    document.body.style.overflow = 'hidden'; // Impede scroll enquanto modal está aberto
+}
+
+function closeModal() {
+    document.getElementById('infoModal').style.display = 'none';
+    document.body.style.overflow = 'auto'; // Restaura scroll
+}
+
+// Fechar modal ao clicar fora
+window.onclick = function(event) {
+    const modal = document.getElementById('infoModal');
+    if (event.target === modal) {
+        closeModal();
+    }
+}
+
+// Fechar menu ao clicar fora em mobile
+document.addEventListener('click', function(event) {
+    const menu = document.getElementById('menu');
+    const hamburger = document.querySelector('.hamburger');
+    
+    if (menu.style.display === 'flex' && !menu.contains(event.target) && !hamburger.contains(event.target)) {
+        menu.style.display = 'none';
+    }
+});
+</script>
+
+</body>
+</html>
